@@ -1,0 +1,5 @@
+-- Add recurring fields to shifts table
+ALTER TABLE shifts ADD COLUMN IF NOT EXISTS is_recurring BOOLEAN DEFAULT FALSE;
+ALTER TABLE shifts ADD COLUMN IF NOT EXISTS recurring_days TEXT[] DEFAULT NULL;
+ALTER TABLE shifts ADD COLUMN IF NOT EXISTS recurring_frequency TEXT DEFAULT NULL;
+ALTER TABLE shifts ADD COLUMN IF NOT EXISTS recurring_end_date DATE DEFAULT NULL;
