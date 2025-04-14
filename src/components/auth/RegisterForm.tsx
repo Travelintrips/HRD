@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Upload } from "lucide-react";
 import { signUp } from "@/lib/supabaseClient";
 
 import { Button } from "@/components/ui/button";
@@ -27,11 +27,26 @@ import {
 
 const formSchema = z
   .object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    alias: z.string().optional(),
+    placeOfBirth: z.string().min(1, "Place of birth is required"),
+    dateOfBirth: z.string().min(1, "Date of birth is required"),
+    religion: z.string().min(1, "Religion is required"),
+    address: z.string().min(1, "Address is required"),
+    phoneNumber: z.string().min(1, "Phone number is required"),
+    relativePhoneNumber: z
+      .string()
+      .min(1, "Relative's phone number is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z
       .string()
       .min(6, "Password must be at least 6 characters"),
+    selfie: z.instanceof(FileList).optional().nullable(),
+    ktp: z.instanceof(FileList).optional().nullable(),
+    kk: z.instanceof(FileList).optional().nullable(),
+    cv: z.instanceof(FileList).optional().nullable(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -48,12 +63,30 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
+  const selfieRef = useRef<HTMLInputElement>(null);
+  const ktpRef = useRef<HTMLInputElement>(null);
+  const kkRef = useRef<HTMLInputElement>(null);
+  const cvRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
+      alias: "",
+      placeOfBirth: "",
+      dateOfBirth: "",
+      religion: "",
+      address: "",
+      phoneNumber: "",
+      relativePhoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
+      selfie: null,
+      ktp: null,
+      kk: null,
+      cv: null,
     },
   });
 
@@ -66,6 +99,23 @@ export default function RegisterForm() {
       const { data: authData, error: authError } = await signUp(
         data.email,
         data.password,
+        {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          alias: data.alias,
+          placeOfBirth: data.placeOfBirth,
+          dateOfBirth: data.dateOfBirth,
+          religion: data.religion,
+          address: data.address,
+          phoneNumber: data.phoneNumber,
+          relativePhoneNumber: data.relativePhoneNumber,
+        },
+        {
+          selfie: data.selfie,
+          ktp: data.ktp,
+          kk: data.kk,
+          cv: data.cv,
+        },
       );
 
       if (authError) {
@@ -113,6 +163,170 @@ export default function RegisterForm() {
         )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="John"
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Doe"
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="alias"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Alias (Fuel Name)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nickname"
+                      {...field}
+                      disabled={isLoading || !!success}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="placeOfBirth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Place of Birth</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Jakarta"
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="religion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Religion</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Religion"
+                      {...field}
+                      disabled={isLoading || !!success}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Your address"
+                      {...field}
+                      disabled={isLoading || !!success}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="+62..."
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="relativePhoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Relative's Phone Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="+62..."
+                        {...field}
+                        disabled={isLoading || !!success}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -200,6 +414,150 @@ export default function RegisterForm() {
                 </FormItem>
               )}
             />
+
+            <div className="space-y-4 mt-6">
+              <h3 className="text-md font-medium">Document Upload</h3>
+
+              <FormField
+                control={form.control}
+                name="selfie"
+                render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel>Selfie Photo</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          ref={selfieRef}
+                          onChange={(e) => {
+                            onChange(e.target.files);
+                          }}
+                          disabled={isLoading || !!success}
+                          className="flex-1"
+                          {...rest}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => selfieRef.current?.click()}
+                          disabled={isLoading || !!success}
+                        >
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ktp"
+                render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel>KTP (ID Card)</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*,.pdf"
+                          ref={ktpRef}
+                          onChange={(e) => {
+                            onChange(e.target.files);
+                          }}
+                          disabled={isLoading || !!success}
+                          className="flex-1"
+                          {...rest}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => ktpRef.current?.click()}
+                          disabled={isLoading || !!success}
+                        >
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="kk"
+                render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel>KK (Family Card)</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*,.pdf"
+                          ref={kkRef}
+                          onChange={(e) => {
+                            onChange(e.target.files);
+                          }}
+                          disabled={isLoading || !!success}
+                          className="flex-1"
+                          {...rest}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => kkRef.current?.click()}
+                          disabled={isLoading || !!success}
+                        >
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cv"
+                render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel>CV (Resume)</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          ref={cvRef}
+                          onChange={(e) => {
+                            onChange(e.target.files);
+                          }}
+                          disabled={isLoading || !!success}
+                          className="flex-1"
+                          {...rest}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => cvRef.current?.click()}
+                          disabled={isLoading || !!success}
+                        >
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button
               type="submit"
               className="w-full"

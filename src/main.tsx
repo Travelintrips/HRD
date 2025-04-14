@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { BrowserRouter, future } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 
 import { TempoDevtools } from "tempo-devtools";
 TempoDevtools.init();
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         v7_relativeSplatPath: true,
       }}
     >
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
