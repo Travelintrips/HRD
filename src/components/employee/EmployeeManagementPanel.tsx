@@ -3,6 +3,7 @@ import { PlusCircle, Download, Upload, RefreshCw } from "lucide-react";
 import EmployeeForm from "./EmployeeForm";
 import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 import TransferEmployeeDialog from "./TransferEmployeeDialog";
+import EmployeeLocationAssignmentDialog from "./EmployeeLocationAssignmentDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,6 +43,8 @@ const EmployeeManagementPanel = ({
   const [showAddEditForm, setShowAddEditForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showTransferDialog, setShowTransferDialog] = useState(false);
+  const [showLocationAssignmentDialog, setShowLocationAssignmentDialog] =
+    useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -61,10 +64,10 @@ const EmployeeManagementPanel = ({
         "employees",
       ).select(`
           *,
-          branches:branch_id (id, name, work_place_id, 
-            work_places:work_place_id (id, name, work_area_id, 
-              work_areas:work_area_id (id, name, city_id, 
-                cities:city_id (id, name)
+          branch_details:branches!branch_id(id, name, work_place_id, 
+            work_place_details:work_places(id, name, work_area_id, 
+              work_area_details:work_areas(id, name, city_id, 
+                city_details:cities(id, name)
               )
             )
           )
@@ -97,10 +100,10 @@ const EmployeeManagementPanel = ({
       // Transform data to match the expected format
       const formattedData = employeeData.map((emp) => {
         // Extract nested data
-        const branch = emp.branches || {};
-        const workPlace = branch.work_places || {};
-        const workArea = workPlace.work_areas || {};
-        const city = workArea.cities || {};
+        const branch = emp.branch_details?.[0] || {};
+        const workPlace = branch.work_place_details?.[0] || {};
+        const workArea = workPlace.work_area_details?.[0] || {};
+        const city = workArea.city_details?.[0] || {};
 
         return {
           id: emp.id,
@@ -220,6 +223,12 @@ const EmployeeManagementPanel = ({
     console.log(`Transfer employee with ID: ${id}`);
     setSelectedEmployee(employee);
     setShowTransferDialog(true);
+  };
+
+  const handleAssignLocation = (id: string, employee: any) => {
+    console.log(`Assign location to employee with ID: ${id}`);
+    setSelectedEmployee(employee);
+    setShowLocationAssignmentDialog(true);
   };
 
   const handleAddNewEmployee = () => {
@@ -452,6 +461,7 @@ const EmployeeManagementPanel = ({
                 onEditEmployee={handleEditEmployee}
                 onDeleteEmployee={handleDeleteEmployee}
                 onTransferEmployee={handleTransferEmployee}
+                onAssignLocation={handleAssignLocation}
                 onSelectEmployee={handleSelectEmployee}
                 onSelectAll={handleSelectAll}
               />
@@ -470,6 +480,7 @@ const EmployeeManagementPanel = ({
                 onEditEmployee={handleEditEmployee}
                 onDeleteEmployee={handleDeleteEmployee}
                 onTransferEmployee={handleTransferEmployee}
+                onAssignLocation={handleAssignLocation}
                 onSelectEmployee={handleSelectEmployee}
                 onSelectAll={handleSelectAll}
               />
@@ -488,6 +499,7 @@ const EmployeeManagementPanel = ({
                 onEditEmployee={handleEditEmployee}
                 onDeleteEmployee={handleDeleteEmployee}
                 onTransferEmployee={handleTransferEmployee}
+                onAssignLocation={handleAssignLocation}
                 onSelectEmployee={handleSelectEmployee}
                 onSelectAll={handleSelectAll}
               />
@@ -525,6 +537,16 @@ const EmployeeManagementPanel = ({
           onSubmit={handleTransferSubmit}
           employeeName={selectedEmployee.name}
           currentBranch={selectedEmployee.branch}
+        />
+      )}
+
+      {/* Location Assignment Dialog */}
+      {showLocationAssignmentDialog && selectedEmployee && (
+        <EmployeeLocationAssignmentDialog
+          open={showLocationAssignmentDialog}
+          onClose={() => setShowLocationAssignmentDialog(false)}
+          employeeId={selectedEmployee.id}
+          employeeName={selectedEmployee.name}
         />
       )}
     </Card>

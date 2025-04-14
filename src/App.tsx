@@ -5,6 +5,7 @@ import routes from "tempo-routes";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginForm from "./components/auth/LoginForm";
 import RegisterForm from "./components/auth/RegisterForm";
+import LoginPage from "./pages/LoginPage";
 
 // Lazy load pages to improve performance
 const EmployeesPage = lazy(() => import("./pages/EmployeesPage"));
@@ -13,6 +14,7 @@ const LeavesPage = lazy(() => import("./pages/LeavesPage"));
 const ReportsPage = lazy(() => import("./pages/ReportsPage"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const FreelancePage = lazy(() => import("./pages/FreelancePage"));
+const LocationsPage = lazy(() => import("./pages/LocationsPage"));
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -34,7 +36,7 @@ function AppRoutes() {
     <Suspense fallback={<p>Loading...</p>}>
       {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
       <Routes>
-        <Route path="login" element={<LoginForm />} />
+        <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterForm />} />
         <Route
           path="/"
@@ -92,7 +94,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="locations"
+          element={
+            <ProtectedRoute>
+              <LocationsPage />
+            </ProtectedRoute>
+          }
+        />
         {import.meta.env.VITE_TEMPO === "true" && <Route path="tempobook/*" />}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
   );

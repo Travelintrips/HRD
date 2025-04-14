@@ -7,6 +7,7 @@ import {
   Trash,
   Eye,
   Building,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -52,6 +53,7 @@ interface EmployeeTableProps {
   onEditEmployee?: (id: string, employee: Employee) => void;
   onDeleteEmployee?: (id: string, employee: Employee) => void;
   onTransferEmployee?: (id: string, employee: Employee) => void;
+  onAssignLocation?: (id: string, employee: Employee) => void;
   onSelectEmployee?: (id: string, selected: boolean) => void;
   onSelectAll?: (selected: boolean) => void;
 }
@@ -113,6 +115,7 @@ const EmployeeTable = ({
   onEditEmployee = () => {},
   onDeleteEmployee = () => {},
   onTransferEmployee = () => {},
+  onAssignLocation = () => {},
   onSelectEmployee = () => {},
   onSelectAll = () => {},
 }: EmployeeTableProps) => {
@@ -363,6 +366,12 @@ const EmployeeTable = ({
                       >
                         <Building className="mr-2 h-4 w-4" />
                         Transfer
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onAssignLocation(employee.id, employee)}
+                      >
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Assign Location
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onDeleteEmployee(employee.id, employee)}

@@ -11,6 +11,7 @@ import {
   LogOut,
   ChevronRight,
   Briefcase,
+  MapPin,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -76,6 +77,11 @@ const Sidebar = ({ activePath = "/" }: SidebarProps) => {
       icon: <Briefcase className="h-5 w-5" />,
       label: "Freelance",
       href: "/freelance",
+    },
+    {
+      icon: <MapPin className="h-5 w-5" />,
+      label: "Geofence Locations",
+      href: "/locations",
     },
     {
       icon: <Settings className="h-5 w-5" />,

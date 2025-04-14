@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Globe,
@@ -1450,7 +1451,7 @@ const SettingsPage = () => {
           </h1>
 
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsList className="grid w-full grid-cols-6 mb-6">
               <TabsTrigger value="general" className="flex items-center gap-2">
                 <Globe className="h-4 w-4" />
                 {language === "id" ? "Umum" : "General"}
@@ -1473,6 +1474,10 @@ const SettingsPage = () => {
               <TabsTrigger value="system" className="flex items-center gap-2">
                 <Database className="h-4 w-4" />
                 {language === "id" ? "Sistem" : "System"}
+              </TabsTrigger>
+              <TabsTrigger value="location" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                {language === "id" ? "Lokasi" : "Location"}
               </TabsTrigger>
             </TabsList>
 
@@ -1606,6 +1611,100 @@ const SettingsPage = () => {
                         ? "Modul ini akan diimplementasikan segera"
                         : "This module will be implemented soon"}
                     </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="location">
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    {language === "id"
+                      ? "Pengaturan Geolokasi"
+                      : "Geolocation Settings"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <Label htmlFor="geofence-radius">
+                      {language === "id"
+                        ? "Radius Geofence (meter)"
+                        : "Geofence Radius (meters)"}
+                    </Label>
+                    <Input
+                      id="geofence-radius"
+                      type="number"
+                      defaultValue="100"
+                      min="50"
+                      max="500"
+                    />
+                    <p className="text-sm text-gray-500">
+                      {language === "id"
+                        ? "Radius di sekitar lokasi kerja di mana karyawan dapat melakukan check-in/out"
+                        : "Radius around work locations where employees can check in/out"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Label htmlFor="location-accuracy">
+                      {language === "id"
+                        ? "Akurasi Lokasi Minimum (meter)"
+                        : "Minimum Location Accuracy (meters)"}
+                    </Label>
+                    <Input
+                      id="location-accuracy"
+                      type="number"
+                      defaultValue="20"
+                      min="10"
+                      max="100"
+                    />
+                    <p className="text-sm text-gray-500">
+                      {language === "id"
+                        ? "Akurasi GPS minimum yang diperlukan untuk check-in/out"
+                        : "Minimum GPS accuracy required for check-in/out"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="require-selfie" defaultChecked />
+                      <Label
+                        htmlFor="require-selfie"
+                        className="font-normal cursor-pointer"
+                      >
+                        {language === "id"
+                          ? "Wajibkan Selfie saat Check-in/out"
+                          : "Require Selfie for Check-in/out"}
+                      </Label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="allow-exceptions" defaultChecked />
+                      <Label
+                        htmlFor="allow-exceptions"
+                        className="font-normal cursor-pointer"
+                      >
+                        {language === "id"
+                          ? "Izinkan Pengecualian Lokasi"
+                          : "Allow Location Exceptions"}
+                      </Label>
+                    </div>
+                    <p className="text-sm text-gray-500 pl-6">
+                      {language === "id"
+                        ? "Karyawan dapat meminta pengecualian jika berada di luar geofence"
+                        : "Employees can request exceptions if outside geofence"}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button variant="default" onClick={handleSaveSettings}>
+                      {language === "id"
+                        ? "Simpan Pengaturan"
+                        : "Save Settings"}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
