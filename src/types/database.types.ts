@@ -165,3 +165,22 @@ export interface FreelanceShiftAssignment {
   shift_id: string;
   created_at: string;
 }
+
+export interface GeofenceLocation {
+  id: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  radius: number;
+  created_at: string;
+  updated_at: string;
+  assigned_employees?: string[]; // Array of employee IDs assigned to this location
+}
+
+export interface EmployeeLocationAssignment {
+  id: string;
+  employee_id: string;
+  location_id: string;
+  created_at: string;
+}
