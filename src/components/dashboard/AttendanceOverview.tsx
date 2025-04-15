@@ -4,6 +4,7 @@ import { Users, UserCheck, UserX, Calendar, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 
 interface StatCardProps {
   title: string;
@@ -13,6 +14,7 @@ interface StatCardProps {
   icon: React.ReactNode;
   color: string;
   isLoading?: boolean;
+  linkTo: string;
 }
 
 // Memoize the StatCard component to prevent unnecessary re-renders
@@ -24,42 +26,45 @@ const StatCard = React.memo(function StatCard({
   icon = <Users />,
   color = "bg-blue-100",
   isLoading = false,
+  linkTo = "/",
 }: StatCardProps) {
   return (
-    <Card className="bg-white shadow-sm h-[140px]">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <h3 className="text-2xl font-bold mt-1 h-8">
-              {isLoading ? (
-                <div className="h-8 w-16 bg-gray-200 animate-pulse rounded"></div>
-              ) : (
-                value
-              )}
-            </h3>
-            <div className="flex items-center mt-1 h-4">
-              {isLoading ? (
-                <div className="h-4 w-20 bg-gray-200 animate-pulse rounded"></div>
-              ) : (
-                <>
-                  <span
-                    className={`text-xs font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {isPositive ? "+" : ""}
-                    {change}
-                  </span>
-                  <span className="text-xs text-gray-500 ml-1">
-                    from yesterday
-                  </span>
-                </>
-              )}
+    <Link to={linkTo} className="block transition-transform hover:scale-[1.02]">
+      <Card className="bg-white shadow-sm h-[140px] cursor-pointer hover:shadow-md transition-shadow">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">{title}</p>
+              <h3 className="text-2xl font-bold mt-1 h-8">
+                {isLoading ? (
+                  <div className="h-8 w-16 bg-gray-200 animate-pulse rounded"></div>
+                ) : (
+                  value
+                )}
+              </h3>
+              <div className="flex items-center mt-1 h-4">
+                {isLoading ? (
+                  <div className="h-4 w-20 bg-gray-200 animate-pulse rounded"></div>
+                ) : (
+                  <>
+                    <span
+                      className={`text-xs font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}
+                    >
+                      {isPositive ? "+" : ""}
+                      {change}
+                    </span>
+                    <span className="text-xs text-gray-500 ml-1">
+                      from yesterday
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
+            <div className={`p-3 rounded-full ${color}`}>{icon}</div>
           </div>
-          <div className={`p-3 rounded-full ${color}`}>{icon}</div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 });
 
@@ -314,6 +319,7 @@ const AttendanceOverview = ({
           icon={<Users className="h-5 w-5 text-blue-600" />}
           color="bg-blue-100"
           isLoading={isLoading}
+          linkTo="/employees"
         />
         <StatCard
           title="Present Today"
@@ -323,6 +329,7 @@ const AttendanceOverview = ({
           icon={<UserCheck className="h-5 w-5 text-green-600" />}
           color="bg-green-100"
           isLoading={isLoading}
+          linkTo="/employees"
         />
         <StatCard
           title="Absent Today"
@@ -332,6 +339,7 @@ const AttendanceOverview = ({
           icon={<UserX className="h-5 w-5 text-red-600" />}
           color="bg-red-100"
           isLoading={isLoading}
+          linkTo="/employees"
         />
         <StatCard
           title="On Leave"
@@ -341,6 +349,7 @@ const AttendanceOverview = ({
           icon={<Calendar className="h-5 w-5 text-blue-600" />}
           color="bg-blue-100"
           isLoading={isLoading}
+          linkTo="/leaves"
         />
         <StatCard
           title="Late Check-ins"
@@ -350,6 +359,7 @@ const AttendanceOverview = ({
           icon={<Clock className="h-5 w-5 text-yellow-600" />}
           color="bg-yellow-100"
           isLoading={isLoading}
+          linkTo="/shifts"
         />
       </div>
     );
